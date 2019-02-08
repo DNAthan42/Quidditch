@@ -29,11 +29,10 @@ public class Snitch : MonoBehaviour
         //look where you're going.
         transform.localRotation = Quaternion.LookRotation(rb.velocity);
 
+        //nudge the turning direction both horizontally and vertically.
         turn.x = Nudge(turn.x);
         turn.y = Nudge(turn.y);
         rb.AddRelativeForce(turn.normalized * maxAccel);
-
-        Debug.Log(turn);
 
         //Capping velocity
         //https://answers.unity.com/questions/683158/how-to-limit-speed-of-a-rigidbody.html

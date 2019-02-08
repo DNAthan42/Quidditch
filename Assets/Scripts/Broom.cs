@@ -9,8 +9,6 @@ public class Broom : MonoBehaviour
     private float maxAccel = 20;
     private bool falling;
 
-    private static int[] points = { 0, 0 };
-
     private Rigidbody rb;
     private TeamManager Team;
     private Transform snitch;
@@ -62,6 +60,7 @@ public class Broom : MonoBehaviour
         {
             falling = false;
             GameObject child = Instantiate(this.gameObject, this.transform.parent);
+            child.name = this.name;
             Destroy(this.gameObject);
         }
     }

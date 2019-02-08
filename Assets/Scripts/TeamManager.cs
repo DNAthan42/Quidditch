@@ -9,11 +9,22 @@ public class TeamManager : MonoBehaviour
     public float MaxVelocity;
     public float TackleProbability;
     public int Team;
+    public int TeamSize;
     private int Points;
 
     //Required GameObjects
     public Transform score;
     public Transform snitch;
+    public GameObject Broom;
+
+    void Start()
+    {
+        for (int i = 0; i < TeamSize; i++)
+        {
+            GameObject player = Instantiate(Broom, this.transform);
+            player.name = $"Player {i}";
+        }
+    }
 
     public void Score()
     {

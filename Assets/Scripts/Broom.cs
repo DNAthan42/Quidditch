@@ -15,6 +15,8 @@ public class Broom : MonoBehaviour
 
     private static int[] points = { 0, 0 };
 
+    private bool falling;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,10 +26,43 @@ public class Broom : MonoBehaviour
             if (r.transform == this.transform) continue;
             r.material.color = (team == 0) ? Color.red : Color.green;
         }
+        falling = false;
     }
 
     // Update is called once per frame
     void Update()
+    {
+        if (!falling) Chase();
+        else Fall();
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Snitch")
+        {
+            score.GetChild(team).GetChild(1).GetComponent<UnityEngine.UI.Text>().text = (++points[team]).ToString();
+        }
+        if (collision.gameObject.tag == "Player")
+        {
+            Broom other = collision.gameObject.GetComponent<Broom>();
+            if (other.team != team)
+            {
+                if (falling || Random.Range(0f, 1f) < .5)
+                {
+                    other.Hit();
+                }
+            }
+        }
+        if (collision.gameObject.tag == "Ground" && falling)
+        {
+            falling = false;
+            GameObject child = Instantiate(this.gameObject, this.transform.parent);
+            child.transform.position = new Vector3(((child.GetComponent<Broom>().team == 0) ? -40 : 40), 10, 0);
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void Chase()
     {
         transform.LookAt(snitch);
         rb.AddRelativeForce(Vector3.forward * maxAccel);
@@ -37,21 +72,14 @@ public class Broom : MonoBehaviour
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void Fall()
     {
-        if (collision.gameObject.tag == "Snitch")
-        {
-            score.GetChild(team).GetChild(1).GetComponent<UnityEngine.UI.Text>().text = (++points[team]).ToString();
-        }
-        if (collision.gameObject.tag == "Player" && collision.gameObject.GetComponent<Broom>().team != team)
-        {
-            if (Random.Range(0f, 1f) < .5)
-            {
-                GameObject other = Instantiate(collision.gameObject, collision.transform.parent);
-                Vector3 spawn = new Vector3(((other.GetComponent<Broom>().team == 0) ? -40 : 40), 10, 0);
-                other.transform.position = spawn;
-                Destroy(collision.gameObject);
-            }
-        }
+        rb.AddForce(Vector3.down * maxAccel);
+        //not capping velocity because it's funnier.
+    }
+
+    public void Hit()
+    {
+        falling = true;
     }
 }

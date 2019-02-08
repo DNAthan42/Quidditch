@@ -56,4 +56,12 @@ public class Snitch : MonoBehaviour
         val *= (Random.Range(0f, 1f) < .01f) ? -1 : 1;
         return val;
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            transform.position = new Vector3(Random.Range(-49, 49), Random.Range(0, 49), Random.Range(-34, 34));
+        }
+    }
 }

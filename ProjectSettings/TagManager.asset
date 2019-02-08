@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Bounds
   - Snitch
+  - Ground
   layers:
   - Default
   - TransparentFX

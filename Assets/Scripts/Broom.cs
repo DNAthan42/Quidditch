@@ -4,29 +4,34 @@ using UnityEngine;
 
 public class Broom : MonoBehaviour
 {
-    Rigidbody rb;
-    public Transform snitch;
 
-    float maxVelocity = 20;
-    float maxAccel = 20;
-
-    public int team = 0;
-    public Transform score;
+    private float maxVelocity = 20;
+    private float maxAccel = 20;
+    private bool falling;
 
     private static int[] points = { 0, 0 };
 
-    private bool falling;
+    private Rigidbody rb;
+    private TeamManager Team;
+    private Transform snitch;
+    private Transform score;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        Team = transform.parent.GetComponent<TeamManager>();
+        score = Team.score;
+        snitch = Team.snitch;
+        maxVelocity = Team.MaxVelocity;
+        maxAccel = Team.MaxAcceleration;
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
             if (r.transform == this.transform) r.material.color = Color.clear;
-            else r.material.color = (team == 0) ? Color.red : Color.green;
+            else r.material.color = (Team.Team == 0) ? Color.red : Color.green;
         }
         falling = false;
+        transform.position = new Vector3(((Team.Team == 0) ? -40 : 40), 10, 0);
     }
 
     // Update is called once per frame
@@ -40,12 +45,12 @@ public class Broom : MonoBehaviour
     {
         if (collision.gameObject.tag == "Snitch")
         {
-            score.GetChild(team).GetChild(1).GetComponent<UnityEngine.UI.Text>().text = (++points[team]).ToString();
+            Team.Score();
         }
         if (collision.gameObject.tag == "Player")
         {
             Broom other = collision.gameObject.GetComponent<Broom>();
-            if (other.team != team)
+            if (other.Team.Team != Team.Team)
             {
                 if (falling || Random.Range(0f, 1f) < .5)
                 {
@@ -57,7 +62,6 @@ public class Broom : MonoBehaviour
         {
             falling = false;
             GameObject child = Instantiate(this.gameObject, this.transform.parent);
-            child.transform.position = new Vector3(((child.GetComponent<Broom>().team == 0) ? -40 : 40), 10, 0);
             Destroy(this.gameObject);
         }
     }

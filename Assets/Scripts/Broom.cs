@@ -23,8 +23,8 @@ public class Broom : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
-            if (r.transform == this.transform) continue;
-            r.material.color = (team == 0) ? Color.red : Color.green;
+            if (r.transform == this.transform) r.material.color = Color.clear;
+            else r.material.color = (team == 0) ? Color.red : Color.green;
         }
         falling = false;
     }
@@ -81,5 +81,6 @@ public class Broom : MonoBehaviour
     public void Hit()
     {
         falling = true;
+        GetComponent<Renderer>().material.color = new Color(0, 0, 1, .2f);
     }
 }

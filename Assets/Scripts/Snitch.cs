@@ -10,9 +10,7 @@ public class Snitch : MonoBehaviour
     public float delta = .01f;
 
     private Vector3 turn;
-    
-
-    Rigidbody rb;
+    private Rigidbody rb;
 
     void Start()
     {

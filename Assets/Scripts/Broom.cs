@@ -52,7 +52,7 @@ public class Broom : MonoBehaviour
             Broom other = collision.gameObject.GetComponent<Broom>();
             if (other.Team.Team != Team.Team)
             {
-                if (falling || Random.Range(0f, 1f) < .5)
+                if (falling || Random.Range(0f, 1f) < Team.TackleProbability)
                 {
                     other.Hit();
                 }

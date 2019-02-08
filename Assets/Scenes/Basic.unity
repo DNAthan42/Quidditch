@@ -654,9 +654,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4fca06bf45d9b24e812c6c0aad67f42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxAcceleration: 20
+  MaxAcceleration: 16
   MaxVelocity: 20
-  TackleProbability: 0.5
+  TackleProbability: 0.3
   Team: 0
   score: {fileID: 1070193772}
   snitch: {fileID: 1445011332}
@@ -2131,9 +2131,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4fca06bf45d9b24e812c6c0aad67f42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxAcceleration: 20
-  MaxVelocity: 20
-  TackleProbability: 0.5
+  MaxAcceleration: 13
+  MaxVelocity: 17
+  TackleProbability: 0.7
   Team: 1
   score: {fileID: 1070193772}
   snitch: {fileID: 1445011332}

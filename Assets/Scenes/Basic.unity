@@ -1408,7 +1408,7 @@ GameObject:
   - component: {fileID: 1445011333}
   m_Layer: 0
   m_Name: Snitch
-  m_TagString: Untagged
+  m_TagString: Snitch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2464,6 +2464,11 @@ PrefabInstance:
       propertyPath: snitch
       value: 
       objectReference: {fileID: 1445011332}
+    - target: {fileID: 7307759153461553641, guid: 567e634b1844ca545b48a40933a33dce,
+        type: 3}
+      propertyPath: team
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 567e634b1844ca545b48a40933a33dce, type: 3}
 --- !u!1001 &1789187319304734523

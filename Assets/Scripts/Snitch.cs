@@ -5,8 +5,8 @@ using UnityEngine;
 public class Snitch : MonoBehaviour
 {
 
-    private float maxVelocity = 20;
-    private float maxAccel = 40;
+    public float maxVelocity = 20;
+    public float maxAccel = 40;
     public float delta = .01f;
 
     private Vector3 turn;

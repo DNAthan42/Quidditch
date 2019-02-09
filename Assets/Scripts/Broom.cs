@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
 
 public class Broom : MonoBehaviour
 {
@@ -47,13 +49,20 @@ public class Broom : MonoBehaviour
         }
         if (collision.gameObject.tag == "Player")
         {
-            Broom other = collision.gameObject.GetComponent<Broom>();
-            if (other.Team.Team != Team.Team)
+            try
             {
-                if (falling || Random.Range(0f, 1f) < Team.TackleProbability)
+                Broom other = collision.gameObject.GetComponent<Broom>();
+                if (other.Team.Team != Team.Team)
                 {
-                    other.Hit();
+                    if (falling || Random.Range(0f, 1f) < Team.TackleProbability)
+                    {
+                        other.Hit();
+                    }
                 }
+            }
+            catch (NullReferenceException)
+            {
+                /* Wierd bug where collision triggers on new broom before start, so no team is set yet. Ignoring.*/
             }
         }
         if (collision.gameObject.tag == "Ground" && falling)

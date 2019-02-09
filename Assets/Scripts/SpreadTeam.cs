@@ -5,4 +5,5 @@ using UnityEngine;
 public class SpreadTeam : TeamManager
 {
     public int radius;
+    public Transform Sensor;
 }

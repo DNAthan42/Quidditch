@@ -7,17 +7,17 @@ using Random = UnityEngine.Random;
 public class Broom : MonoBehaviour
 {
 
-    private float maxVelocity = 20;
-    private float maxAccel = 20;
-    private bool falling;
+    protected float maxVelocity = 20;
+    protected float maxAccel = 20;
+    protected bool falling;
 
-    private Rigidbody rb;
-    private TeamManager Team;
-    private Transform snitch;
-    private Transform score;
+    protected Rigidbody rb;
+    protected TeamManager Team;
+    protected Transform snitch;
+    protected Transform score;
 
     // Start is called before the first frame update
-    void Start()
+    virtual protected void Start()
     {
         rb = GetComponent<Rigidbody>();
         Team = transform.parent.GetComponent<TeamManager>();
@@ -35,7 +35,7 @@ public class Broom : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    virtual protected void Update()
     {
         if (!falling) Chase();
         else Fall();
@@ -74,7 +74,7 @@ public class Broom : MonoBehaviour
         }
     }
 
-    private void Chase()
+    public virtual void Chase()
     {
         transform.LookAt(snitch);
         rb.AddRelativeForce(Vector3.forward * maxAccel);
@@ -84,7 +84,7 @@ public class Broom : MonoBehaviour
             rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
     }
 
-    private void Fall()
+    protected void Fall()
     {
         rb.AddForce(Vector3.down * maxAccel);
         //not capping velocity because it's funnier.
@@ -95,4 +95,6 @@ public class Broom : MonoBehaviour
         falling = true;
         GetComponent<Renderer>().material.color = new Color(0, 0, 1, .2f);
     }
+
+    public TeamManager GetTeam() { return Team;  }
 }

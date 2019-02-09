@@ -99,6 +99,7 @@ public class SpreadBroom : Broom
         else if (snitchSensed) Chase();
         else if (teamSensed) Spread();
         else if (enemySensed) Attack();
+        else Chase();
         //Capping velocity
         //https://answers.unity.com/questions/683158/how-to-limit-speed-of-a-rigidbody.html
         if (rb.velocity.magnitude > maxVelocity)

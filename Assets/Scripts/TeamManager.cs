@@ -22,7 +22,7 @@ public class TeamManager : MonoBehaviour
         for (int i = 0; i < TeamSize; i++)
         {
             GameObject player = Instantiate(Broom, this.transform);
-            player.name = $"Player {i}";
+            player.name = $"{Team}-Player {i}";
         }
     }
 

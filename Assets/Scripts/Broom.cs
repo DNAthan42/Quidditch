@@ -9,6 +9,7 @@ public class Broom : MonoBehaviour
 
     protected float maxVelocity = 20;
     protected float maxAccel = 20;
+    protected int teamNum = -1;
     protected bool falling;
 
     protected Rigidbody rb;
@@ -21,6 +22,7 @@ public class Broom : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         Team = transform.parent.GetComponent<TeamManager>();
+        teamNum = Team.Team;
         score = Team.score;
         snitch = Team.snitch;
         maxVelocity = Team.MaxVelocity;
@@ -28,10 +30,10 @@ public class Broom : MonoBehaviour
         foreach (Renderer r in GetComponentsInChildren<Renderer>())
         {
             if (r.transform == this.transform) r.material.color = Color.clear;
-            else r.material.color = (Team.Team == 0) ? Color.red : Color.green;
+            else r.material.color = (teamNum == 0) ? Color.red : Color.green;
         }
         falling = false;
-        transform.position = new Vector3(((Team.Team == 0) ? -40 : 40), 10, 0);
+        transform.position = new Vector3(((teamNum == 0) ? -40 : 40), 10, 0);
     }
 
     // Update is called once per frame
@@ -41,18 +43,29 @@ public class Broom : MonoBehaviour
         else Fall();
     }
 
-    void OnCollisionEnter(Collision collision)
+    virtual protected void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Snitch")
         {
-            Team.Score();
+            try
+            {
+                Team.Score();
+            }
+            catch (NullReferenceException)
+            {
+                /* Another bug where spread brooms are calling this method even though it's overridden.*/
+            }
         }
         if (collision.gameObject.tag == "Player")
         {
+            Broom other = collision.gameObject.GetComponent<SpreadBroom>();
+            if (other == null)
+            {
+                other = collision.gameObject.GetComponent<Broom>();
+            }
             try
             {
-                Broom other = collision.gameObject.GetComponent<Broom>();
-                if (other.Team.Team != Team.Team)
+                if (other.teamNum != teamNum)
                 {
                     if (falling || Random.Range(0f, 1f) < Team.TackleProbability)
                     {
@@ -64,6 +77,7 @@ public class Broom : MonoBehaviour
             {
                 /* Wierd bug where collision triggers on new broom before start, so no team is set yet. Ignoring.*/
             }
+
         }
         if (collision.gameObject.tag == "Ground" && falling)
         {
@@ -96,5 +110,5 @@ public class Broom : MonoBehaviour
         GetComponent<Renderer>().material.color = new Color(0, 0, 1, .2f);
     }
 
-    public TeamManager GetTeam() { return Team;  }
+    public int GetTeam() { return teamNum;  }
 }

@@ -17,8 +17,22 @@ public class SpreadBroom : Broom
 
     protected override void Start()
     {
-        base.Start();
+        rb = GetComponent<Rigidbody>();
         spreadTeam = transform.parent.GetComponent<SpreadTeam>();
+        Team = spreadTeam;
+        teamNum = spreadTeam.Team;
+        score = spreadTeam.score;
+        snitch = spreadTeam.snitch;
+        maxVelocity = spreadTeam.MaxVelocity;
+        maxAccel = spreadTeam.MaxAcceleration;
+        foreach (Renderer r in GetComponentsInChildren<Renderer>())
+        {
+            if (r.transform == this.transform) r.material.color = Color.clear;
+            else r.material.color = (Team.Team == 0) ? Color.red : Color.green;
+        }
+        falling = false;
+        transform.position = new Vector3(((Team.Team == 0) ? -40 : 40), 10, 0);
+
         sensor = Instantiate(spreadTeam.Sensor, this.transform);
         sensor.localScale = new Vector3(spreadTeam.radius, spreadTeam.radius, spreadTeam.radius);
     }
@@ -40,7 +54,17 @@ public class SpreadBroom : Broom
         }
         if (other.gameObject.tag == "Player")
         {
-            if (other.gameObject.GetComponent<SpreadBroom>().Team.Team == Team.Team)
+            int otherTeam = -1;
+            try
+            {
+                otherTeam = other.gameObject.GetComponent<SpreadBroom>().GetTeam();
+            }
+            catch (NullReferenceException)
+            {
+                otherTeam = other.gameObject.GetComponent<Broom>().GetTeam();
+            }
+
+            if (otherTeam == teamNum)
             {
                 teamSensed = true;
                 spreadDirection += ((other.transform.position - this.transform.position) / spreadTeam.radius) * -1;
@@ -53,52 +77,17 @@ public class SpreadBroom : Broom
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    protected override void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Snitch")
-        {
-            Team.Score();
-        }
-        if (collision.gameObject.tag == "Ground" && falling)
-        {
-            falling = false;
-            GameObject child = Instantiate(this.gameObject, this.transform.parent);
-            child.name = this.name;
-            Destroy(this.gameObject);
-        }
-        if (collision.gameObject.tag == "Player")
-        {
-            try
-            {
-                Broom other = collision.gameObject.GetComponent<Broom>();
-                if (other.GetTeam().Team != Team.Team)
-                {
-                    if (falling || Random.Range(0f, 1f) < Team.TackleProbability)
-                    {
-                        other.Hit();
-                    }
-                }
-            }
-            catch (NullReferenceException)
-            {
-                SpreadBroom other = collision.gameObject.GetComponent<SpreadBroom>();
-                if (other.Team.Team != Team.Team)
-                {
-                    if (falling || Random.Range(0f, 1f) < Team.TackleProbability)
-                    {
-                        other.Hit();
-                    }
-                }
-            }
-        }
+        base.OnCollisionEnter(collision);
     }
 
     protected override void Update()
     {
         if (falling) Fall();
         else if (snitchSensed) Chase();
-        else if (teamSensed) Spread();
         else if (enemySensed) Attack();
+        else if (teamSensed) Spread();
         else Chase();
         //Capping velocity
         //https://answers.unity.com/questions/683158/how-to-limit-speed-of-a-rigidbody.html
